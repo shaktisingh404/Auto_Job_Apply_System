@@ -12,6 +12,7 @@ class User(Base):
     skills = Column(Text)  # Comma separated or JSON
     experience = Column(Text)
     phone_number = Column(String, nullable=True)
+    location = Column(String, nullable=True) # User's preferred location
     resume_path = Column(String, nullable=True) # URL or File Path
     resume_url = Column(String, nullable=True) # Keeping for backward compatibility if needed, or replace
     created_at = Column(DateTime(timezone=True), server_default=func.now())

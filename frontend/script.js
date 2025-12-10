@@ -38,6 +38,7 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
         phone_number: document.getElementById('phone').value,
+        location: document.getElementById('user-location').value,
         resume_path: document.getElementById('resume').value,
         skills: document.getElementById('skills').value,
         experience: document.getElementById('experience').value
@@ -55,7 +56,13 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
             showToast('Profile saved successfully!');
             // Save to local storage for persistence across reloads
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            setTimeout(() => showSection('search-section'), 1000)
+            showToast('Profile saved! Generating customized job search...');
+            setTimeout(() => {
+                showSection('search-section');
+                // Auto-search logic: clear inputs and search
+                document.getElementById('job-query').value = "";
+                searchJobs();
+            }, 1000)
         } else {
             const error = await response.json();
             if (response.status === 400 && error.detail === "Email already registered") {
@@ -88,9 +95,15 @@ window.addEventListener('load', () => {
         document.getElementById('name').value = currentUser.name || '';
         document.getElementById('email').value = currentUser.email || '';
         document.getElementById('phone').value = currentUser.phone_number || '';
+        document.getElementById('user-location').value = currentUser.location || '';
         document.getElementById('resume').value = currentUser.resume_path || '';
         document.getElementById('skills').value = currentUser.skills || '';
         document.getElementById('experience').value = currentUser.experience || '';
+
+        // Auto-fill job search location from profile if not set
+        if (currentUser.location) {
+            document.getElementById('job-location').value = currentUser.location;
+        }
         showToast(`Welcome back, ${currentUser.name}`);
         showSection('search-section');
     }
@@ -104,8 +117,9 @@ async function searchJobs() {
     const loading = document.getElementById('loading');
     const container = document.getElementById('jobs-container');
 
-    if (!query) {
-        showToast('Please enter a job title');
+    // If no query and no user, warn. If user exists, we allow empty query (AI mode).
+    if (!query && !currentUser) {
+        showToast('Please enter a job title or log in for AI suggestions');
         return;
     }
 
@@ -113,7 +127,12 @@ async function searchJobs() {
     container.innerHTML = '';
 
     try {
-        const response = await fetch(`${API_BASE_URL}/jobs/search?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`);
+        let url = `${API_BASE_URL}/jobs/search?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+        if (currentUser && currentUser.id) {
+            url += `&user_id=${currentUser.id}`;
+        }
+
+        const response = await fetch(url);
         const jobs = await response.json();
 
         loading.classList.add('hidden');
@@ -134,7 +153,7 @@ async function searchJobs() {
                     ${job.description.substring(0, 100)}...
                 </p>
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <a href="${job.url}" target="_blank" style="text-decoration: none; font-size: 0.9rem; color: #60a5fa; margin-bottom: 0.5rem; display: block;">View on LinkedIn</a>
+                    <!-- Link removed as per user request -->
                 </div>
                 ${job.hr_email ?
                     `<button onclick="applyForJob(${job.id})" class="primary-btn">Easy Apply with AI</button>` :

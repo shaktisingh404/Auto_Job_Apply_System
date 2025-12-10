@@ -18,23 +18,22 @@ def extract_email(text: str) -> str:
     match = re.search(email_pattern, text)
     return match.group(0) if match else None
 
-def search_jobs(query: str, location: str = "remote") -> List[Dict]:
+def search_jobs(filters: Dict) -> List[Dict]:
     """
     Search for jobs using RapidAPI LinkedIn Job Search API (active-jb-24h).
     """
     url = f"https://{RAPIDAPI_HOST}/active-jb-24h"
     
-    
-    encoded_query = quote(query)
-    encoded_location = quote(location)
-    
+    # Defaults
     querystring = {
         "limit": "10",
         "offset": "0",
-        "title_filter": query,
-        "location_filter": location,
         "description_type": "text"
     }
+    
+    # Merge dynamic filters (overriding defaults if present)
+    if filters:
+        querystring.update(filters)
 
     headers = {
         "x-rapidapi-key": RAPIDAPI_KEY,
