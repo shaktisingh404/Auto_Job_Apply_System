@@ -136,7 +136,10 @@ async function searchJobs() {
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                     <a href="${job.url}" target="_blank" style="text-decoration: none; font-size: 0.9rem; color: #60a5fa; margin-bottom: 0.5rem; display: block;">View on LinkedIn</a>
                 </div>
-                <button onclick="applyForJob(${job.id})" class="primary-btn">Easy Apply with AI</button>
+                ${job.hr_email ?
+                    `<button onclick="applyForJob(${job.id})" class="primary-btn">Easy Apply with AI</button>` :
+                    `<a href="${job.url}" target="_blank" class="primary-btn" style="text-decoration: none; text-align: center; display: block;">Apply Manually</a>`
+                }
             `;
             container.appendChild(card);
         });

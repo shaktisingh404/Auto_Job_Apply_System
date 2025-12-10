@@ -1,67 +1,55 @@
 import os
 import google.generativeai as genai
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 def generate_email_content(user_details: dict, job_details: dict) -> str:
     """
-    Generate a cold email using Google Gemini.
+    Generate a highly personalized cold email using Google Gemini.
     """
     
+    # Validation to ensure we don't proceed without a key
+    if not GEMINI_API_KEY:
+        raise ValueError("API Key is missing. Please set GEMINI_API_KEY environment variable.")
+
     prompt = f"""
-    You are an expert career coach and copywriter. Write a professional and compelling cold email for a job application.
+    You are an expert career coach and professional copywriter specializing in high-conversion cold emails.
     
-    Candidate Details:
-    Name: {user_details.get('name')}
-    Email: {user_details.get('email')}
-    Phone: {user_details.get('phone_number')}
-    Skills: {user_details.get('skills')}
-    Experience: {user_details.get('experience')}
-    
-    Job Details:
-    Title: {job_details.get('title')}
-    Company: {job_details.get('company')}
-    Description: {job_details.get('description')}
-    
-    The email should be concise, highlight relevant skills, and ask for an interview.
-    IMPORTANT: Mention that the candidate's resume is attached to this email.
+    **OBJECTIVE:** Write a concise, persuasive, and professional cold email for a job application that distinguishes the candidate from the crowd.
+
+    **CANDIDATE PROFILE:**
+    * Name: {user_details.get('name')}
+    * Key Skills: {user_details.get('skills')}
+    * Experience Summary: {user_details.get('experience')}
+
+    **JOB TARGET:**
+    * Role: {job_details.get('title')}
+    * Company: {job_details.get('company')}
+    * Job Description Insights: {job_details.get('description')}
+
+    **WRITING GUIDELINES:**
+    1. **Subject Line:** Create a subject line that is professional but catchy (e.g., "Regarding [Role] / [Candidate's Top Achievement]").
+    2. **The Hook:** Start by expressing genuine interest in {job_details.get('company')}.
+    3. **The Bridge:** Do not just list skills. Connect the candidate's specific experience directly to the requirements found in the job description. Show *how* they can solve the company's problems.
+    4. **Tone:** Confident, humble, and strictly professional. Avoid overly flowery language.
+    5. **Formatting:** Use short paragraphs for readability. 
+    6. **Requirement:** Explicitly mention that the resume is attached.
+    7. **Call to Action:** End with a clear, low-pressure request for a brief conversation.
+
+    **OUTPUT:** Return strictly the email content (Subject and Body). Do not include conversational filler like "Here is your email."
     """
-
-    # Mock response if key is not set
-    if GEMINI_API_KEY == "YOUR_GEMINI_API_KEY":
-        print("Using Mock Data for Gemini Agent (Key not found)")
-        return f"""Subject: Application for {job_details.get('title')} at {job_details.get('company')}
-
-Dear Hiring Manager,
-
-I am writing to express my strong interest in the {job_details.get('title')} position at {job_details.get('company')}. With my background in {user_details.get('skills')}, I am confident in my ability to contribute effectively to your team.
-
-{user_details.get('experience')}
-
-I would welcome the opportunity to discuss how my skills align with your needs. Thank you for your time and consideration.
-
-Best regards,
-{user_details.get('name')}
-"""
 
     try:
         genai.configure(api_key=GEMINI_API_KEY)
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        
+        # Switched to 1.5-flash as '2.5' is not currently a standard production endpoint.
+        # You can change this to 'gemini-2.0-flash-exp' if you have access to the preview.
+        model = genai.GenerativeModel('gemini-2.5-flash') 
+        
         response = model.generate_content(prompt)
         return response.text
+        
     except Exception as e:
-        print(f"Error generating content with Gemini: {e}")
-        # Fallback to Mock Data so the app doesn't break
-        return f"""Subject: Application for {job_details.get('title')} at {job_details.get('company')} (Fallback)
-
-Dear Hiring Manager,
-
-I am writing to express my strong interest in the {job_details.get('title')} position at {job_details.get('company')}. With my background in {user_details.get('skills')}, I am confident in my ability to contribute effectively to your team.
-
-{user_details.get('experience')}
-
-I would welcome the opportunity to discuss how my skills align with your needs. Thank you for your time and consideration.
-
-Best regards,
-{user_details.get('name')}
-"""
+        # Log the error for debugging, but raise it so the application knows the email failed.
+        print(f"Critical Error in Gemini Generation: {e}")
+        raise e

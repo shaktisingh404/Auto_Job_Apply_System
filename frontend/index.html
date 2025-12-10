@@ -29,44 +29,55 @@
 
     <main class="container">
         <!-- User Profile Section -->
-        <section id="user-section" class="glass-panel active-section">
-            <h2>Your Profile</h2>
-            <p class="subtitle">Let the AI know about you to generate the perfect cover letter.</p>
+        <section id="user-section" class="glass-panel active-section" style="padding: 0; overflow: hidden;">
+            <div class="profile-grid">
+                <div class="profile-left">
+                    <h2>Your Profile</h2>
+                    <p class="subtitle">Let the AI know about you to generate the perfect cover letter.</p>
 
-            <form id="user-form">
-                <div class="input-group">
-                    <label for="name">Full Name <span class="required-star">*</span></label>
-                    <input type="text" id="name" placeholder="John Doe" required>
+                    <form id="user-form">
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="name">Full Name <span class="required-star">*</span></label>
+                                <input type="text" id="name" placeholder="John Doe" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="email">Email <span class="required-star">*</span></label>
+                                <input type="email" id="email" placeholder="john@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+                            </div>
+                            <div class="input-group">
+                                <label for="resume">Resume Path / URL</label>
+                                <input type="text" id="resume"
+                                    placeholder="C:\path\to\resume.pdf or https://linkedin.com/in/...">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="skills">Skills (Comma separated) <span class="required-star">*</span></label>
+                            <input type="text" id="skills" placeholder="Python, React, AWS, FastAPI" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="experience">Experience Summary <span class="required-star">*</span></label>
+                            <textarea id="experience" rows="4" placeholder="5 years of full-stack development..."
+                                required></textarea>
+                        </div>
+
+                        <button type="submit" class="primary-btn">Save Profile</button>
+                    </form>
                 </div>
-
-                <div class="input-group">
-                    <label for="email">Email Address <span class="required-star">*</span></label>
-                    <input type="email" id="email" placeholder="john@example.com" required>
+                <div class="profile-right">
+                    <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=2670&auto=format&fit=crop"
+                        alt="Workspace">
                 </div>
-
-                <div class="input-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
-                </div>
-
-                <div class="input-group">
-                    <label for="resume">Resume Path / URL</label>
-                    <input type="text" id="resume" placeholder="C:\path\to\resume.pdf or https://linkedin.com/in/...">
-                </div>
-
-                <div class="input-group">
-                    <label for="skills">Skills (Comma separated) <span class="required-star">*</span></label>
-                    <input type="text" id="skills" placeholder="Python, React, AWS, FastAPI" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="experience">Experience Summary <span class="required-star">*</span></label>
-                    <textarea id="experience" rows="4" placeholder="5 years of full-stack development..."
-                        required></textarea>
-                </div>
-
-                <button type="submit" class="primary-btn">Save Profile</button>
-            </form>
+            </div>
         </section>
 
         <!-- Job Search Section -->
