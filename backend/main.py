@@ -14,10 +14,13 @@ from .database import engine, Base, get_db
 from . import models, schemas
 from .services import linkedin, agent, email
 
+from fastapi.staticfiles import StaticFiles
+
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Job Search Agent")
+
 
 # CORS configuration
 app.add_middleware(
@@ -28,9 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def read_root():
-    return {"message": "Job Search Agent API is running"}
+
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -53,7 +54,7 @@ def get_user(email: str, db: Session = Depends(get_db)):
 
 @app.get("/jobs/search", response_model=List[schemas.Job])
 def search_jobs(query: str, location: str = "remote", db: Session = Depends(get_db)):
-    # 1. Fetch from RapidAPI (or Mock)
+    # 1. Fetch from RapidAPI
     try:
         rapid_jobs = linkedin.search_jobs(query, location)
     except Exception as e:
@@ -138,3 +139,8 @@ def apply_for_job(application: schemas.ApplicationCreate, user_id: int, db: Sess
 @app.get("/applications/{user_id}", response_model=List[schemas.Application])
 def get_applications(user_id: int, db: Session = Depends(get_db)):
     return db.query(models.Application).filter(models.Application.user_id == user_id).all()
+
+# Mount frontend directory
+import os
+frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")

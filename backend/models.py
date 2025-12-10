@@ -24,7 +24,7 @@ class Job(Base):
     id = Column(Integer, primary_key=True, index=True)
     rapidapi_id = Column(String, unique=True, index=True)
     title = Column(String)
-    company = Column(String)
+    company = Column(String, default="")
     location = Column(String)
     description = Column(Text)
     hr_email = Column(String, nullable=True) # New field

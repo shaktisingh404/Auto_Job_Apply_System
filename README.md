@@ -29,18 +29,12 @@ This project is an AI-powered job search and application assistant. It scrapes j
 
 ## Usage
 
-1.  **Start the Backend**:
+1.  **Start the Application**:
     ```bash
     python -m uvicorn backend.main:app --reload --port 8000
     ```
-2.  **Start the Frontend**:
-    Serve the `frontend` folder (e.g., using Python's http.server):
-    ```bash
-    cd frontend
-    python -m http.server 8080
-    ```
-3.  **Access the App**:
-    Open `http://localhost:8080` in your browser.
+2.  **Access the App**:
+    Open `http://localhost:8000` in your browser.
 
 ## Project Structure
 - `backend/`: FastAPI application, database models, and services (Agent, Email, LinkedIn).

@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "";
 
 let currentUser = null;
 
@@ -10,8 +10,12 @@ function showSection(sectionId) {
     document.getElementById(sectionId).classList.remove('hidden-section');
     document.getElementById(sectionId).classList.add('active-section');
 
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(sectionId)) {
+            btn.classList.add('active');
+        }
+    });
 }
 
 function showToast(message) {
@@ -49,8 +53,9 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
         if (response.ok) {
             currentUser = await response.json();
             showToast('Profile saved successfully!');
-            // Save to local storage for persistence across reloads (simple implementations)
+            // Save to local storage for persistence across reloads
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            setTimeout(() => showSection('search-section'), 1000)
         } else {
             const error = await response.json();
             if (response.status === 400 && error.detail === "Email already registered") {
@@ -87,6 +92,7 @@ window.addEventListener('load', () => {
         document.getElementById('skills').value = currentUser.skills || '';
         document.getElementById('experience').value = currentUser.experience || '';
         showToast(`Welcome back, ${currentUser.name}`);
+        showSection('search-section');
     }
 });
 
@@ -149,8 +155,6 @@ async function applyForJob(jobId) {
         return;
     }
 
-    // Find button to show loading state (simple DOM traversal)
-    // Ideally we'd pass the element, but this works for simple scripts
     showToast('AI Agent is generating your email...');
 
     const applicationData = {
@@ -166,7 +170,7 @@ async function applyForJob(jobId) {
 
         if (response.ok) {
             const application = await response.json();
-            
+
             if (application.status === 'manual_apply_required') {
                 showToast(`Manual Application Required. Check 'Applications' tab.`);
             } else {
@@ -204,12 +208,9 @@ async function loadApplications() {
         }
 
         applications.forEach(app => {
-            // Because our endpoint currently doesn't join job details deeply nested, 
-            // the simple example schema might only return IDs or nested objects depending on ORM setup.
-            // In models.py we set relationships. Pydantic default schema might include 'job'.
 
             const jobTitle = app.job ? app.job.title : `Job #${app.job_id}`;
-            const company = app.job ? app.job.company : 'Unknown Company';
+            const company = app.job ? app.job.company : '';
 
             let statusClass = 'status-pending';
             let statusText = app.status ? app.status.replace('_', ' ').toUpperCase() : 'UNKNOWN';

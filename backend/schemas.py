@@ -24,9 +24,9 @@ class User(UserBase):
 # Job Schemas
 class JobBase(BaseModel):
     rapidapi_id: str
-    title: Optional[str] = "Unknown Title"
-    company: Optional[str] = "Unknown Company"
-    location: Optional[str] = "Unknown Location"
+    title: Optional[str] = ""
+    company: Optional[str] = ""
+    location: Optional[str] = ""
     description: Optional[str] = "No description"
     hr_email: Optional[str] = None 
     url: Optional[str] = "#"
@@ -41,7 +41,7 @@ class JobBase(BaseModel):
             return "" # Or let the default= take over? 
             # Wait, mode='before' receives None. If we return None, default might NOT trigger if Optional allows None.
             # We want to force a string.
-            return "Unknown"
+            return ""
         return str(v)
 
 class JobCreate(JobBase):
