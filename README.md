@@ -1,4 +1,4 @@
-# AI Job Application Agent
+# Auto Job Apply System
 
 This project is an AI-powered job search and application assistant. It scrapes job listings (mocked/RapidAPI), allows users to create a profile with their resume and skills, and uses Google Gemini to generate personalized cold emails for job applications, attaching the user's resume.
 

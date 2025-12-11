@@ -10,7 +10,7 @@ class UserBase(BaseModel):
     experience: str
     phone_number: Optional[str] = None
     location: Optional[str] = None
-    resume_path: Optional[str] = None
+    linkedin_url: Optional[str] = None
 
 class UserCreate(UserBase):
     pass

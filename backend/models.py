@@ -9,12 +9,11 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
-    skills = Column(Text)  # Comma separated or JSON
+    skills = Column(Text)
     experience = Column(Text)
     phone_number = Column(String, nullable=True)
-    location = Column(String, nullable=True) # User's preferred location
-    resume_path = Column(String, nullable=True) # URL or File Path
-    resume_url = Column(String, nullable=True) # Keeping for backward compatibility if needed, or replace
+    location = Column(String, nullable=True)
+    linkedin_url = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     applications = relationship("Application", back_populates="user")
@@ -28,7 +27,7 @@ class Job(Base):
     company = Column(String, default="")
     location = Column(String)
     description = Column(Text)
-    hr_email = Column(String, nullable=True) # New field
+    hr_email = Column(String, nullable=True)
     url = Column(String)
     posted_at = Column(DateTime(timezone=True), nullable=True)
 
@@ -40,7 +39,7 @@ class Application(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     job_id = Column(Integer, ForeignKey("jobs.id"))
-    status = Column(String, default="applied") # applied, email_sent, etc.
+    status = Column(String, default="applied")
     generated_email_content = Column(Text)
     applied_at = Column(DateTime(timezone=True), server_default=func.now())
 

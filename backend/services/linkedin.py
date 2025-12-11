@@ -1,22 +1,14 @@
 import requests
 print("DEBUG: linkedin.py LOADED")
 import os
-import re
 from typing import List, Dict
 from urllib.parse import quote
+from .utils import extract_email
 
 # Load from environment or use defaults
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "0497530d8cmsh56f0d2763d130e5p1a652djsnf5c0fd191f89")
 RAPIDAPI_HOST = os.getenv("RAPIDAPI_HOST", "linkedin-job-search-api.p.rapidapi.com")
 
-def extract_email(text: str) -> str:
-    """Extracts the first email address found in the text."""
-    if not text:
-        return None
-    # Regex for email extraction
-    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-    match = re.search(email_pattern, text)
-    return match.group(0) if match else None
 
 def search_jobs(filters: Dict) -> List[Dict]:
     """

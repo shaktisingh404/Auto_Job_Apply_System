@@ -1,19 +1,13 @@
 import requests
 import os
-import re
 from typing import List, Dict
+from .utils import extract_email
 
 # Specific credentials for Active Jobs DB
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY", "8b25aa6a19msh5f1231629a205a7p16e368jsn458fa3565a76")
 RAPIDAPI_HOST = os.getenv("RAPIDAPI_HOST_ACTIVE_JOBS_DB", "active-jobs-db.p.rapidapi.com")
 
-def extract_email(text: str) -> str:
-    """Extracts the first email address found in the text."""
-    if not text:
-        return None
-    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-    match = re.search(email_pattern, text)
-    return match.group(0) if match else None
+
 
 def search_jobs(filters: Dict) -> List[Dict]:
     """

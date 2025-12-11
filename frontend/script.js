@@ -27,7 +27,7 @@ function showToast(message) {
     }, 3000);
 }
 
-// User Profile Handling
+
 document.getElementById('user-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = e.target.querySelector('button');
@@ -39,7 +39,7 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
         email: document.getElementById('email').value,
         phone_number: document.getElementById('phone').value,
         location: document.getElementById('user-location').value,
-        resume_path: document.getElementById('resume').value,
+        linkedin_url: document.getElementById('linkedin_url').value,
         skills: document.getElementById('skills').value,
         experience: document.getElementById('experience').value
     };
@@ -54,13 +54,15 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
         if (response.ok) {
             currentUser = await response.json();
             showToast('Profile saved successfully!');
-            // Save to local storage for persistence across reloads
+            showToast('Profile saved successfully!');
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showToast('Profile saved! Generating customized job search...');
             showToast('Profile saved! Generating customized job search...');
             setTimeout(() => {
                 showSection('search-section');
-                // Auto-search logic: clear inputs and search
+                showSection('search-section');
                 document.getElementById('job-query').value = "";
+                searchJobs();
                 searchJobs();
             }, 1000)
         } else {
@@ -87,7 +89,7 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
     }
 });
 
-// Load user from local storage on startup
+
 window.addEventListener('load', () => {
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
@@ -96,11 +98,10 @@ window.addEventListener('load', () => {
         document.getElementById('email').value = currentUser.email || '';
         document.getElementById('phone').value = currentUser.phone_number || '';
         document.getElementById('user-location').value = currentUser.location || '';
-        document.getElementById('resume').value = currentUser.resume_path || '';
+        document.getElementById('linkedin_url').value = currentUser.linkedin_url || '';
         document.getElementById('skills').value = currentUser.skills || '';
         document.getElementById('experience').value = currentUser.experience || '';
 
-        // Auto-fill job search location from profile if not set
         if (currentUser.location) {
             document.getElementById('job-location').value = currentUser.location;
         }
@@ -110,14 +111,13 @@ window.addEventListener('load', () => {
 });
 
 
-// Job Search
+
 async function searchJobs() {
     const query = document.getElementById('job-query').value;
     const location = document.getElementById('job-location').value;
     const loading = document.getElementById('loading');
     const container = document.getElementById('jobs-container');
 
-    // If no query and no user, warn. If user exists, we allow empty query (AI mode).
     if (!query && !currentUser) {
         showToast('Please enter a job title or log in for AI suggestions');
         return;
@@ -153,7 +153,7 @@ async function searchJobs() {
                     ${job.description.substring(0, 100)}...
                 </p>
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <!-- Link removed as per user request -->
+
                 </div>
                 ${job.hr_email ?
                     `<button onclick="applyForJob(${job.id})" class="primary-btn">Easy Apply with AI</button>` :
@@ -169,7 +169,7 @@ async function searchJobs() {
     }
 }
 
-// Apply Logic
+
 async function applyForJob(jobId) {
     if (!currentUser) {
         showToast('Please save your profile first before applying!');
@@ -213,7 +213,7 @@ async function applyForJob(jobId) {
     }
 }
 
-// Load Applications
+
 async function loadApplications() {
     if (!currentUser) return;
 
@@ -246,8 +246,6 @@ async function loadApplications() {
             }
 
             let actionHtml = '';
-            // Fix: Check where 'url' is located. Typically in app.job.url. 
-            // If app.job is present.
             if (app.status === 'manual_apply_required' && app.job && app.job.url) {
                 actionHtml = `<a href="${app.job.url}" target="_blank" class="manual-apply-btn">Apply Now ↗</a>`;
             }
@@ -273,5 +271,5 @@ async function loadApplications() {
     }
 }
 
-// Load applications when section is clicked
+
 document.querySelector('button[onclick="showSection(\'applied-section\')"]').addEventListener('click', loadApplications);
